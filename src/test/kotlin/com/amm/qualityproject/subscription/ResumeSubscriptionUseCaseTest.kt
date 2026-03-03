@@ -1,0 +1,29 @@
+package com.amm.test.application.subscription
+
+import com.amm.qualityproject.application.subscription.ResumeSubscriptionUseCase
+import com.amm.qualityproject.domain.model.SubscriptionStatus
+import com.amm.qualityproject.domain.repository.SubscriptionRepository
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
+import org.mockito.Mockito.*
+import java.math.BigDecimal
+import com.amm.test.domain.model.Subscription
+
+class ResumeSubscriptionUseCaseTest {
+
+    private val repository: SubscriptionRepository = mock()
+    private val useCase = ResumeSubscriptionUseCase(repository)
+
+    @Test
+    fun `should resume a paused subscription and save it in repository`() {
+        val subscription = Subscription.create(BigDecimal("29.99"))
+        subscription.pause()
+
+       `when`(repository.findById(subscription.id.toString())).thenReturn(subscription)
+
+        useCase.execute(subscription.id.toString())
+
+        assertEquals(SubscriptionStatus.Active, subscription.status)
+        verify(repository).save(subscription)
+    }
+}
