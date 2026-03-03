@@ -6,6 +6,6 @@ import com.amm.test.domain.model.Subscription
 
 class DefaultCancellationPolicy : CancellationPolicy {
     override fun canCancel(subscription: Subscription): Boolean {
-        return subscription.status !is SubscriptionStatus.Cancelled
+        return subscription.status !is SubscriptionStatus.Cancelled //true if is not cancelled
     }
 }

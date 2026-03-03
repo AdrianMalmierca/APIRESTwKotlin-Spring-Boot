@@ -17,7 +17,7 @@ class Subscription private constructor(
 
     val status: SubscriptionStatus get() = _status
 
-    companion object {
+    companion object { //because we need to access to the Subscription attributes
         fun create(monthlyPrice: BigDecimal): Subscription {
             require(monthlyPrice > BigDecimal.ZERO) {
                 "Monthly price must be positive"
