@@ -1,6 +1,7 @@
 package com.amm.qualityproject.application.subscription
 
 import com.amm.qualityproject.domain.repository.SubscriptionRepository
+import java.util.UUID
 
 
 class ResumeSubscriptionUseCase(private val repository: SubscriptionRepository) {

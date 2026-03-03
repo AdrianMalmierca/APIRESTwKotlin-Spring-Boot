@@ -2,6 +2,7 @@ package com.amm.qualityproject.application.subscription
 
 import com.amm.qualityproject.domain.model.implementation.DefaultCancellationPolicy
 import com.amm.qualityproject.domain.repository.SubscriptionRepository
+import java.util.UUID
 
 class CancelSubscriptionUseCase(private val repository: SubscriptionRepository) {
     fun execute(subscriptionId: String) {

@@ -1,4 +1,4 @@
-package com.yourname.qualityproject
+package com.amm.qualityproject
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication

@@ -1,6 +1,7 @@
 package com.amm.qualityproject.application.subscription
 
 import com.amm.qualityproject.domain.repository.SubscriptionRepository
+import java.util.UUID
 
 class PauseSubscriptionUseCase(private val repository: SubscriptionRepository) {
     fun execute(subscriptionId: String) {

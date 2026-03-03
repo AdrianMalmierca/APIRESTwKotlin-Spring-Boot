@@ -6,6 +6,7 @@ import com.amm.qualityproject.domain.model.implementation.DefaultCancellationPol
 import com.amm.qualityproject.domain.model.interfaces.CancellationPolicy
 import java.math.BigDecimal
 import java.time.Instant
+import java.time.LocalDateTime
 import java.util.UUID
 
 class Subscription private constructor(
@@ -18,6 +19,7 @@ class Subscription private constructor(
     val status: SubscriptionStatus get() = _status
 
     companion object { //because we need to access to the Subscription attributes
+        
         fun create(monthlyPrice: BigDecimal): Subscription {
             require(monthlyPrice > BigDecimal.ZERO) {
                 "Monthly price must be positive"
@@ -30,6 +32,28 @@ class Subscription private constructor(
                 cancelledAt = null
             )
         }
+        fun restore(
+            id: String,
+            monthlyPrice: BigDecimal,
+            status: String,
+            cancelledAt: Instant?
+        ): Subscription {
+
+            val subscription = Subscription(
+                id = UUID.fromString(id),
+                monthlyPrice = MonthlyPrice(monthlyPrice),
+                _status = when (status) {
+                    "Active" -> SubscriptionStatus.Active
+                    "Paused" -> SubscriptionStatus.Paused
+                    "Cancelled" -> SubscriptionStatus.Cancelled
+                    else -> throw IllegalArgumentException("Unknown status")
+                },
+                cancelledAt = cancelledAt
+            )
+
+            return subscription
+        }
+
     }
 
     fun pause() {
