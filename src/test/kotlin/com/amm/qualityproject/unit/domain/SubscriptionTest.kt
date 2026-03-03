@@ -15,7 +15,7 @@ class SubscriptionTest {
         )
 
         assertEquals(SubscriptionStatus.Active, subscription.status)
-        assertEquals(BigDecimal("29.99"), subscription.monthlyPrice)
+        assertEquals(BigDecimal("29.99"), subscription.monthlyPrice.value)
         assertNotNull(subscription.id)
     }
 
@@ -33,6 +33,15 @@ class SubscriptionTest {
         subscription.pause()
 
         assertEquals(SubscriptionStatus.Paused, subscription.status)
+    }
+
+    @Test
+    fun `should resume a paused subscription`() {
+        val subscription = Subscription.create(BigDecimal("29.99"))
+
+        subscription.pause()
+        subscription.resume()
+        assertEquals(SubscriptionStatus.Active, subscription.status)
     }
 
     @Test
