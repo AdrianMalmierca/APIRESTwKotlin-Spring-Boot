@@ -8,7 +8,7 @@ import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
 
 @Testcontainers
-@SpringBootTest
+@SpringBootTest(properties = ["spring.profiles.active=test"])
 abstract class AbstractIntegrationTest {
 
     companion object {

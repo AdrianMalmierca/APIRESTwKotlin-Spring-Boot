@@ -1,74 +1,62 @@
 package com.amm.qualityproject.integration
 
-import com.amm.qualityproject.application.subscription.CancelSubscriptionUseCase
-import com.amm.qualityproject.application.subscription.CreateSubscriptionUseCase
-import com.amm.qualityproject.application.subscription.PauseSubscriptionUseCase
-import com.amm.qualityproject.application.subscription.ResumeSubscriptionUseCase
+import com.amm.qualityproject.application.subscription.*
 import com.amm.qualityproject.domain.model.SubscriptionStatus
 import com.amm.qualityproject.infraestructure.persistence.adapter.JpaSubscriptionRepository
 import com.amm.qualityproject.infraestructure.persistence.repository.SpringDataSubscriptionRepository
-import com.amm.test.application.subscription.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.DynamicPropertyRegistry
-import org.springframework.test.context.DynamicPropertySource
-import org.testcontainers.containers.PostgreSQLContainer
-import org.testcontainers.junit.jupiter.Container
-import org.testcontainers.junit.jupiter.Testcontainers
 import java.math.BigDecimal
 
-@SpringBootTest
-@Testcontainers
-class SubscriptionIntegrationTest(
-    private val springDataRepository: SpringDataSubscriptionRepository
-) {
+@SpringBootTest(properties = ["spring.profiles.active=test"])
+class SubscriptionIntegrationTest{
 
-    companion object {
+    @Autowired
+    private lateinit var springDataRepository: SpringDataSubscriptionRepository
 
-        @Container
-        val postgres = PostgreSQLContainer("postgres:15")
-            .withDatabaseName("testdb")
-            .withUsername("test")
-            .withPassword("test")
-
-        @JvmStatic
-        @DynamicPropertySource
-        fun configure(registry: DynamicPropertyRegistry) {
-            registry.add("spring.datasource.url", postgres::getJdbcUrl)
-            registry.add("spring.datasource.username", postgres::getUsername)
-            registry.add("spring.datasource.password", postgres::getPassword)
-        }
+    private fun createUseCases(): SubscriptionUseCases {
+        val repository = JpaSubscriptionRepository(springDataRepository)
+        return SubscriptionUseCases(
+            create = CreateSubscriptionUseCase(repository),
+            pause = PauseSubscriptionUseCase(repository),
+            resume = ResumeSubscriptionUseCase(repository),
+            cancel = CancelSubscriptionUseCase(repository),
+            repository = repository
+        )
     }
 
     @Test
-    fun `full lifecycle integration test`() {
-
-        val repository = JpaSubscriptionRepository(springDataRepository)
-
-        val create = CreateSubscriptionUseCase(repository)
-        val pause = PauseSubscriptionUseCase(repository)
-        val resume = ResumeSubscriptionUseCase(repository)
-        val cancel = CancelSubscriptionUseCase(repository)
+    fun `full subscription lifecycle`() {
+        val price = BigDecimal("29.99")
+        val cases = createUseCases()
 
         // CREATE
-        val subscription = create.execute(BigDecimal("29.99"))
+        val subscription = cases.create.execute(price)
         assertEquals(SubscriptionStatus.Active, subscription.status)
 
         // PAUSE
-        pause.execute(subscription.id.toString())
-        val paused = repository.findById(subscription.id.toString())!!
+        cases.pause.execute(subscription.id.toString())
+        val paused = cases.repository.findById(subscription.id.toString())!!
         assertEquals(SubscriptionStatus.Paused, paused.status)
 
         // RESUME
-        resume.execute(subscription.id.toString())
-        val resumed = repository.findById(subscription.id.toString())!!
+        cases.resume.execute(subscription.id.toString())
+        val resumed = cases.repository.findById(subscription.id.toString())!!
         assertEquals(SubscriptionStatus.Active, resumed.status)
 
         // CANCEL
-        cancel.execute(subscription.id.toString())
-        val cancelled = repository.findById(subscription.id.toString())!!
+        cases.cancel.execute(subscription.id.toString())
+        val cancelled = cases.repository.findById(subscription.id.toString())!!
         assertEquals(SubscriptionStatus.Cancelled, cancelled.status)
     }
+
+    private data class SubscriptionUseCases(
+        val create: CreateSubscriptionUseCase,
+        val pause: PauseSubscriptionUseCase,
+        val resume: ResumeSubscriptionUseCase,
+        val cancel: CancelSubscriptionUseCase,
+        val repository: JpaSubscriptionRepository
+    )
 }

@@ -29,7 +29,6 @@ dependencies {
 
 
     //Spring Boot + JPA
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     runtimeOnly("org.postgresql:postgresql")
 
     //Testcontainers
@@ -42,9 +41,8 @@ dependencies {
     runtimeOnly("org.postgresql:postgresql")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.testcontainers:junit-jupiter")
-    testImplementation("org.testcontainers:postgresql")
     testImplementation("org.testcontainers:testcontainers")
+    testImplementation("com.h2database:h2:2.2.224")
 }
 
 tasks.test {
