@@ -1,4 +1,4 @@
-package com.amm.test.application.subscription
+package com.amm.qualityproject.subscription
 
 import com.amm.qualityproject.application.subscription.ResumeSubscriptionUseCase
 import com.amm.qualityproject.domain.model.SubscriptionStatus
@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test
 import org.mockito.Mockito.*
 import java.math.BigDecimal
 import com.amm.test.domain.model.Subscription
+import org.junit.jupiter.api.Assertions.assertThrows
 
 class ResumeSubscriptionUseCaseTest {
 
@@ -16,6 +17,7 @@ class ResumeSubscriptionUseCaseTest {
 
     @Test
     fun `should resume a paused subscription and save it in repository`() {
+
         val subscription = Subscription.create(BigDecimal("29.99"))
         subscription.pause()
 
@@ -25,5 +27,19 @@ class ResumeSubscriptionUseCaseTest {
 
         assertEquals(SubscriptionStatus.Active, subscription.status)
         verify(repository).save(subscription)
+    }
+
+
+    @Test
+    fun `should throw when resume non existing subscription`() {
+        val subscription = Subscription.create(BigDecimal("29.99"))
+
+        `when`(repository.findById("unknown")).thenReturn(null)
+
+        assertThrows(IllegalArgumentException::class.java) {
+            useCase.execute("unknown")
+        }
+
+        verify(repository, never()).save(subscription)
     }
 }

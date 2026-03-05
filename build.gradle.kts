@@ -27,22 +27,16 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
 
-
-    //Spring Boot + JPA
     runtimeOnly("org.postgresql:postgresql")
 
-    //Testcontainers
-    testImplementation("org.testcontainers:junit-jupiter:1.19.3")
-    testImplementation("org.testcontainers:postgresql:1.19.3")
-
-    //Testing
+    // Testing
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 
-    runtimeOnly("org.postgresql:postgresql")
+    // Testcontainers
+    testImplementation("org.testcontainers:junit-jupiter:1.19.7")
+    testImplementation("org.testcontainers:postgresql:1.19.7")
 
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.testcontainers:testcontainers")
-    testImplementation("com.h2database:h2:2.2.224")
+    testImplementation("com.h2database:h2:2.2.220")
 }
 
 tasks.test {

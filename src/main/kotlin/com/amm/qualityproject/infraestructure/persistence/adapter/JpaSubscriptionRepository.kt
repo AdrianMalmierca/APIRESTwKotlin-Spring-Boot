@@ -4,8 +4,10 @@ import com.amm.qualityproject.domain.repository.SubscriptionRepository
 import com.amm.qualityproject.infraestructure.persistence.entity.JpaSubscriptionEntity
 import com.amm.qualityproject.infraestructure.persistence.repository.SpringDataSubscriptionRepository
 import com.amm.test.domain.model.*
+import org.springframework.stereotype.Repository
 import java.util.UUID
 
+@Repository
 class JpaSubscriptionRepository(private val repository: SpringDataSubscriptionRepository)
     : SubscriptionRepository {
 

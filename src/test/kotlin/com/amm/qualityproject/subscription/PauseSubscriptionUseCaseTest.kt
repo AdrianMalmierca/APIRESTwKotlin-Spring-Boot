@@ -1,4 +1,4 @@
-package com.amm.test.application.subscription
+package com.amm.qualityproject.subscription
 
 import com.amm.qualityproject.application.subscription.PauseSubscriptionUseCase
 import com.amm.qualityproject.domain.model.SubscriptionStatus
@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test
 import org.mockito.Mockito.*
 import java.math.BigDecimal
 import com.amm.test.domain.model.Subscription
+import org.junit.jupiter.api.Assertions.assertThrows
 
 class PauseSubscriptionUseCaseTest {
 
@@ -24,5 +25,20 @@ class PauseSubscriptionUseCaseTest {
 
         assertEquals(SubscriptionStatus.Paused, subscription.status)
         verify(repository).save(subscription)
+    }
+
+
+    @Test
+    fun `should throw when pausing non existing subscription`() {
+
+        val subscription = Subscription.create(BigDecimal("29.99"))
+
+        `when`(repository.findById("unknown")).thenReturn(null)
+
+        assertThrows(IllegalArgumentException::class.java) {
+            useCase.execute("unknown")
+        }
+
+        verify(repository, never()).save(subscription)
     }
 }

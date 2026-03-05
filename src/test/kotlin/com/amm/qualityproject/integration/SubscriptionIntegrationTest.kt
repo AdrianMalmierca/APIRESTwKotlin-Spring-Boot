@@ -1,7 +1,7 @@
 package com.amm.qualityproject.integration
 
-import com.amm.qualityproject.application.subscription.*
 import com.amm.qualityproject.domain.model.SubscriptionStatus
+import com.amm.qualityproject.application.subscription.*
 import com.amm.qualityproject.infraestructure.persistence.adapter.JpaSubscriptionRepository
 import com.amm.qualityproject.infraestructure.persistence.repository.SpringDataSubscriptionRepository
 import org.junit.jupiter.api.Assertions.assertEquals

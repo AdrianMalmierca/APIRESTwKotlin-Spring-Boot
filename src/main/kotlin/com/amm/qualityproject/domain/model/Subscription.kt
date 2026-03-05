@@ -19,7 +19,7 @@ class Subscription private constructor(
     val status: SubscriptionStatus get() = _status
 
     companion object { //because we need to access to the Subscription attributes
-        
+
         fun create(monthlyPrice: BigDecimal): Subscription {
             require(monthlyPrice > BigDecimal.ZERO) {
                 "Monthly price must be positive"
@@ -32,6 +32,7 @@ class Subscription private constructor(
                 cancelledAt = null
             )
         }
+
         fun restore(
             id: String,
             monthlyPrice: BigDecimal,
